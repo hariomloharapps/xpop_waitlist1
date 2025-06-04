@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XPOP - The Future of Pre-Loved Fashion</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #000;
+            color: #fff;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        header {
+            padding: 2rem 0;
+            position: relative;
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            background: linear-gradient(135deg, #fff 0%, #ccc 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 4rem 0 6rem;
+            position: relative;
+        }
+
+        .hero h1 {
+            font-size: clamp(3rem, 8vw, 6rem);
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            letter-spacing: -0.04em;
+            line-height: 0.9;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            margin-bottom: 3rem;
+            opacity: 0.8;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin: 4rem 0;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .feature-card h3 {
+            font-size: 1.25rem;
+            margin-bottom: 0.75rem;
+            font-weight: 600;
+        }
+
+        .feature-card p {
+            opacity: 0.8;
+            font-size: 0.95rem;
+        }
+
+        .waitlist-section {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+            border-radius: 24px;
+            padding: 3rem 2rem;
+            margin: 4rem 0;
+            text-align: center;
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .waitlist-section h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .waitlist-section p {
+            font-size: 1.1rem;
+            opacity: 0.8;
+            margin-bottom: 2rem;
+        }
+
+        .waitlist-form {
+            max-width: 400px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            text-align: left;
+        }
+
+        .form-group label {
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            opacity: 0.9;
+        }
+
+        .form-group input {
+            padding: 0.875rem 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            color: #fff;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: rgba(255, 255, 255, 0.4);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .form-group input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .submit-btn {
+            padding: 1rem 2rem;
+            background: #fff;
+            color: #000;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 0.5rem;
+        }
+
+        .submit-btn:hover {
+            background: rgba(255, 255, 255, 0.9);
+            transform: translateY(-2px);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .success-message, .error-message {
+            display: none;
+            padding: 1rem;
+            border-radius: 12px;
+            margin-top: 1rem;
+        }
+
+        .success-message {
+            background: rgba(34, 197, 94, 0.1);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            color: #22c55e;
+        }
+
+        .error-message {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #ef4444;
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal {
+            background: #111;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 2rem;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            position: relative;
+            animation: modalSlideIn 0.3s ease-out;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-30px) scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .modal h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #fff;
+        }
+
+        .modal p {
+            opacity: 0.8;
+            margin-bottom: 1.5rem;
+            line-height: 1.5;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .modal-btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 120px;
+        }
+
+        .btn-yes {
+            background: #fff;
+            color: #000;
+        }
+
+        .btn-yes:hover {
+            background: rgba(255, 255, 255, 0.9);
+            transform: translateY(-2px);
+        }
+
+        .btn-no {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-no:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .final-message {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            margin-top: 2rem;
+        }
+
+        .final-message h3 {
+            margin-bottom: 1rem;
+            color: #22c55e;
+        }
+
+
+
+        @media (max-width: 480px) {
+            .modal {
+                padding: 1.5rem;
+            }
+            
+            .modal-buttons {
+                flex-direction: column;
+            }
+            
+            .modal-btn {
+                min-width: auto;
+            }
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem 0;
+            opacity: 0.6;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .features {
+                grid-template-columns: 1fr;
+            }
+            
+            .waitlist-section {
+                padding: 2rem 1rem;
+            }
+            
+            .waitlist-section h2 {
+                font-size: 2rem;
+            }
+        }
+
+        /* Subtle animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero, .features, .waitlist-section {
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .features {
+            animation-delay: 0.2s;
+        }
+
+        .waitlist-section {
+            animation-delay: 0.4s;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">XPOP</div>
+        </header>
+
+        <section class="hero">
+            <h1>The Future of<br>Pre-Loved Fashion</h1>
+            <p>The world's first auction marketplace for pre-loved fashion. Bid on unique pieces, auction your wardrobe treasures, and discover fashion through the thrill of live bidding.</p>
+        </section>
+
+        <section class="features">
+            <div class="feature-card">
+                <span class="feature-icon">⚡</span>
+                <h3>Live Auction Bidding</h3>
+                <p>Experience the excitement of real-time auctions. Bid on exclusive pre-loved fashion pieces and score amazing deals through competitive bidding.</p>
+            </div>
+            
+            <div class="feature-card">
+                <span class="feature-icon">🎯</span>
+                <h3>Auction Your Wardrobe</h3>
+                <p>List your fashion treasures and let buyers compete for them. Set starting bids and watch as your items reach their true market value.</p>
+            </div>
+            
+            <div class="feature-card">
+                <span class="feature-icon">💎</span>
+                <h3>Discover Unique Pieces</h3>
+                <p>Find one-of-a-kind fashion items, vintage treasures, and designer pieces that you won't find anywhere else in our auction marketplace.</p>
+            </div>
+            
+            <div class="feature-card">
+                <span class="feature-icon">🌱</span>
+                <h3>Sustainable Fashion</h3>
+                <p>Reduce fashion waste while building your dream wardrobe. Every auction extends the life of beautiful clothing and helps the planet.</p>
+            </div>
+        </section>
+
+        <section class="waitlist-section">
+            <div id="newUserSection">
+                <h2>Join the Auction Revolution</h2>
+                <p>Be the first to bid, sell, and discover in our exclusive auction marketplace. Early access members get special bidding privileges!</p>
+                
+                <form class="waitlist-form" id="waitlistForm">
+                    <div class="form-group">
+                        <label for="name">Name</label>
+                        <input type="text" id="name" name="name" placeholder="Enter your full name" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" name="email" placeholder="Enter your email address" required>
+                    </div>
+                    
+                    <button type="submit" class="submit-btn" id="submitBtn">Join Exclusive Waitlist</button>
+                    
+                    <div class="success-message" id="successMessage"></div>
+                    <div class="error-message" id="errorMessage"></div>
+                </form>
+            </div>
+            
+            <div class="final-message" id="finalMessage">
+                <h3>🚀 Welcome Back!</h3>
+                <p id="welcomeMessage"></p>
+            </div>
+        </section>
+
+        <!-- Modal for Beta Testing -->
+        <div class="modal-overlay" id="modalOverlay">
+            <div class="modal">
+                <h3>🛠️ Help Us Build Something Amazing!</h3>
+                <p>Would you like to help us improve XPOP before we launch to everyone? We'll contact you for early testing, get your feedback, and make the app even better. Plus, you'll get to try it before anyone else!</p>
+                <div class="modal-buttons">
+                    <button class="modal-btn btn-yes" id="btnYes">Yes, I'd Love To Help!</button>
+                    <button class="modal-btn btn-no" id="btnNo">Just Keep Me Updated</button>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>&copy; 2025 XPOP. Built with ❤️ by Hariom Lohar (Spling)</p>
+        </footer>
+    </div>
+
+    <script>
+        // Configuration - Update this with your actual API endpoint
+        const API_CONFIG = {
+            baseURL: 'http://localhost:8000/api',
+            waitlistEndpoint: '/waitlist/',
+        };
+
+        // Local Storage Keys
+        const STORAGE_KEYS = {
+            USER_DATA: 'xpop_user_data',
+            WAITLIST_STATUS: 'xpop_waitlist_status',
+            BETA_TESTER: 'xpop_beta_tester',
+            JOIN_DATE: 'xpop_join_date'
+        };
+
+        let userEmail = '';
+        let userName = '';
+        let agreeToHelp = false;
+
+        // Local Storage Management
+        function saveUserData(userData) {
+            try {
+                const dataToStore = {
+                    name: userData.name,
+                    email: userData.email,
+                    isInWaitlist: true,
+                    isBetaTester: userData.agree_to_help,
+                    joinDate: new Date().toISOString(),
+                    timestamp: Date.now()
+                };
+                
+                localStorage.setItem(STORAGE_KEYS.USER_DATA, JSON.stringify(dataToStore));
+                localStorage.setItem(STORAGE_KEYS.WAITLIST_STATUS, 'true');
+                localStorage.setItem(STORAGE_KEYS.BETA_TESTER, userData.agree_to_help.toString());
+                localStorage.setItem(STORAGE_KEYS.JOIN_DATE, dataToStore.joinDate);
+                
+                console.log('User data saved to localStorage:', dataToStore);
+                return true;
+            } catch (error) {
+                console.error('Failed to save user data:', error);
+                return false;
+            }
+        }
+
+        function getUserData() {
+            try {
+                const userData = localStorage.getItem(STORAGE_KEYS.USER_DATA);
+                if (userData) {
+                    return JSON.parse(userData);
+                }
+                return null;
+            } catch (error) {
+                console.error('Failed to retrieve user data:', error);
+                return null;
+            }
+        }
+
+        function isUserInWaitlist() {
+            const userData = getUserData();
+            return userData && userData.isInWaitlist;
+        }
+
+        function clearUserData() {
+            try {
+                localStorage.removeItem(STORAGE_KEYS.USER_DATA);
+                localStorage.removeItem(STORAGE_KEYS.WAITLIST_STATUS);
+                localStorage.removeItem(STORAGE_KEYS.BETA_TESTER);
+                localStorage.removeItem(STORAGE_KEYS.JOIN_DATE);
+                console.log('User data cleared from localStorage');
+                return true;
+            } catch (error) {
+                console.error('Failed to clear user data:', error);
+                return false;
+            }
+        }
+
+        // Check user status on page load
+        function checkUserStatus() {
+            const userData = getUserData();
+            
+            if (userData && userData.isInWaitlist) {
+                // User is already in waitlist - show welcome message
+                showWelcomeMessage(userData);
+            } else {
+                // New user - show signup form
+                showSignupForm();
+            }
+        }
+
+        function showWelcomeMessage(userData) {
+            document.getElementById('newUserSection').style.display = 'none';
+            document.getElementById('finalMessage').style.display = 'block';
+            
+            const joinDate = new Date(userData.joinDate).toLocaleDateString();
+            const daysSinceJoin = Math.floor((Date.now() - new Date(userData.joinDate).getTime()) / (1000 * 60 * 60 * 24));
+            
+            let message = `
+                <p><strong>Hi ${userData.name}!</strong> 👋</p>
+                <p>You joined our waitlist on ${joinDate} (${daysSinceJoin} days ago).</p>
+            `;
+            
+            if (userData.isBetaTester) {
+                message += `
+                    <p style="color: #22c55e; margin-top: 1rem;">
+                        🧪 <strong>Beta Tester Status:</strong> Active<br>
+                        We'll contact you at <strong>${userData.email}</strong> for early testing!
+                    </p>
+                `;
+            } else {
+                message += `
+                    <p style="color: #60a5fa; margin-top: 1rem;">
+                        📧 <strong>Waitlist Status:</strong> Active<br>
+                        We'll notify you at <strong>${userData.email}</strong> when we launch!
+                    </p>
+                `;
+            }
+            
+            message += `
+                <p style="margin-top: 1rem; opacity: 0.8; font-size: 0.9rem;">
+                    Thanks for your patience. We're working hard to bring you the best auction experience!
+                </p>
+            `;
+            
+            document.getElementById('welcomeMessage').innerHTML = message;
+        }
+
+        function showSignupForm() {
+            document.getElementById('newUserSection').style.display = 'block';
+            document.getElementById('finalMessage').style.display = 'none';
+        }
+
+        // Utility function to show messages
+        function showMessage(elementId, message, isError = false) {
+            const element = document.getElementById(elementId);
+            element.textContent = message;
+            element.style.display = 'block';
+            
+            const otherElementId = isError ? 'successMessage' : 'errorMessage';
+            document.getElementById(otherElementId).style.display = 'none';
+            
+            setTimeout(() => {
+                element.style.display = 'none';
+            }, 5000);
+        }
+
+        // Function to send data to Django API
+            // Function to send data to Django API
+        async function sendToAPI(userData) {
+            try {
+                console.log('Sending data to API:', userData);
+                
+                const response = await fetch(`${API_CONFIG.baseURL}${API_CONFIG.waitlistEndpoint}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                    },
+                    body: JSON.stringify(userData)
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    return {
+                        success: true,
+                        data: data,
+                        message: data.message || 'Successfully added to waitlist!'
+                    };
+                } else {
+                    return {
+                        success: false,
+                        error: data.error || data.message || 'Something went wrong. Please try again.'
+                    };
+                }
+                
+            } catch (error) {
+                console.error('API Error:', error);
+                return {
+                    success: false,
+                    error: 'Network error. Please check your connection and try again.'
+                };
+            }
+        }
+
+        // Form submission handler
+        document.getElementById('waitlistForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('name').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const submitBtn = document.getElementById('submitBtn');
+            
+            // Validation
+            if (!name || !email) {
+                showMessage('errorMessage', 'Please fill in all fields', true);
+                return;
+            }
+            
+            // Basic email validation
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                showMessage('errorMessage', 'Please enter a valid email address', true);
+                return;
+            }
+            
+            // Store user data temporarily
+            userName = name;
+            userEmail = email;
+            
+            // Update button state
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Joining...';
+            
+            // Clear previous messages
+            document.getElementById('successMessage').style.display = 'none';
+            document.getElementById('errorMessage').style.display = 'none';
+            
+            try {
+                showMessage('successMessage', '🎉 Welcome to XPOP! Now let us know how you\'d like to help...');
+                
+                // Show modal after short delay
+                setTimeout(() => {
+                    document.getElementById('modalOverlay').style.display = 'flex';
+                }, 1000);
+                
+            } catch (error) {
+                showMessage('errorMessage', 'Something went wrong. Please try again.', true);
+            } finally {
+                // Reset button
+                setTimeout(() => {
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Join Exclusive Waitlist';
+                }, 2000);
+            }
+        });
+
+        // Modal functionality
+        const modalOverlay = document.getElementById('modalOverlay');
+        const btnYes = document.getElementById('btnYes');
+        const btnNo = document.getElementById('btnNo');
+        const finalMessage = document.getElementById('finalMessage');
+        const newUserSection = document.getElementById('newUserSection');
+
+        btnYes.addEventListener('click', async function() {
+            agreeToHelp = true;
+            await handleModalChoice(true);
+        });
+
+        btnNo.addEventListener('click', async function() {
+            agreeToHelp = false;
+            await handleModalChoice(false);
+        });
+
+        async function handleModalChoice(wantsToHelp) {
+            const userData = {
+                name: userName,
+                email: userEmail,
+                agree_to_help: wantsToHelp
+            };
+
+            modalOverlay.style.display = 'none';
+            
+            // Send data to Django API
+            const result = await sendToAPI(userData);
+            
+            if (result.success) {
+                // Save to localStorage
+                const saved = saveUserData(userData);
+                
+                if (saved) {
+                    // Hide form and show success message
+                    newUserSection.style.display = 'none';
+                    
+                    // Show appropriate success message
+                    const successData = {
+                        name: userData.name,
+                        email: userData.email,
+                        isInWaitlist: true,
+                        isBetaTester: wantsToHelp,
+                        joinDate: new Date().toISOString()
+                    };
+                    
+                    showWelcomeMessage(successData);
+                    
+                    console.log('User successfully added to waitlist and saved locally:', {
+                        user_id: result.data.user_id,
+                        is_beta_tester: result.data.is_beta_tester,
+                        email: userEmail,
+                        stored_locally: true
+                    });
+                } else {
+                    showMessage('errorMessage', 'Failed to save your data locally. Please try again.', true);
+                    newUserSection.style.display = 'block';
+                }
+            } else {
+                showMessage('errorMessage', result.error, true);
+                newUserSection.style.display = 'block';
+            }
+        }
+
+
+
+        // Close modal when clicking outside
+        modalOverlay.addEventListener('click', function(e) {
+            if (e.target === modalOverlay) {
+                modalOverlay.style.display = 'none';
+                handleModalChoice(false);
+            }
+        });
+
+        // Add some interactive hover effects
+        document.querySelectorAll('.feature-card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-5px) scale(1.02)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0) scale(1)';
+            });
+        });
+
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('XPOP Frontend loaded - checking user status...');
+            checkUserStatus();
+        });
+
+        // Development helper
+        console.log('XPOP Frontend Configuration:', API_CONFIG);
+    </script>
+</body>
+</html>
